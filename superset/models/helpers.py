@@ -98,7 +98,6 @@ if TYPE_CHECKING:
 config = app.config
 logger = logging.getLogger(__name__)
 
-CTE_ALIAS = "__cte"
 VIRTUAL_TABLE_ALIAS = "virtual_table"
 ADVANCED_DATA_TYPES = config["ADVANCED_DATA_TYPES"]
 
@@ -1049,7 +1048,7 @@ class ExploreMixin:  # pylint: disable=too-many-public-methods
 
         cte = self.db_engine_spec.get_cte_query(from_sql)
         from_clause = (
-            sa.table(CTE_ALIAS)
+            sa.table(self.db_engine_spec.cte_alias)
             if cte
             else TextAsFrom(self.text(from_sql), []).alias(VIRTUAL_TABLE_ALIAS)
         )
@@ -1621,7 +1620,7 @@ class ExploreMixin:  # pylint: disable=too-many-public-methods
 
         # Order by columns are "hidden" columns, some databases require them
         # always be present in SELECT if an aggregation function is used
-        if not db_engine_spec.allows_hidden_ordeby_agg:
+        if not db_engine_spec.allows_hidden_orderby_agg:
             select_exprs = utils.remove_duplicates(select_exprs + orderby_exprs)
 
         qry = sa.select(select_exprs)
