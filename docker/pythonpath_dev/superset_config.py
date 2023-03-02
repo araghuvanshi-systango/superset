@@ -28,6 +28,8 @@ from typing import Optional
 from cachelib.file import FileSystemCache
 from celery.schedules import crontab
 
+from docker.pythonpath_dev.my_security_manager import MySecurityManager
+
 logger = logging.getLogger()
 
 
@@ -121,3 +123,9 @@ try:
     )
 except ImportError:
     logger.info("Using default Docker config...")
+
+# Custom updates
+CUSTOM_SECURITY_MANAGER = MySecurityManager
+WTF_CSRF_ENABLED = False
+AUTH_USER_REGISTRATION = True
+AUTH_USER_REGISTRATION_ROLE = "Public"
